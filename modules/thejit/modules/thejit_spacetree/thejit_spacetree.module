@@ -493,7 +493,7 @@ function _thejit_spacetree_deflate($values) {
       $result[$key] = $value;
     }
     else {
-      $result += $value;
+      $result = array_merge($result, $value);
     }
   }
   return $result;
