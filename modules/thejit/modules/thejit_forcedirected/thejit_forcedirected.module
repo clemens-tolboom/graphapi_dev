@@ -302,12 +302,22 @@ function thejit_forcedirected_graph_to_forcedirected($graph_in) {
     $node = thejit_forcedirected_create_node($graph, (string) $id, $name);
     $node->data->{'$dim'} = 10;
     $node->data->{'$color'} = isset($data['data']['background-color']) ? $data['data']['background-color'] : 'white';
+    foreach ($data['data'] as $key => $value) {
+      if (strpos($key, '$') === 0) {
+        $node->data->{$key} = $value;
+      }
+    }
   }
   foreach ($graph_in as $from => $data) {
     foreach ($graph_in[$from]['edges'] as $to => $data) {
       // we flip from/to as thejit draws the arrow reverse
       $adj = thejit_forcedirected_create_adjacency($graph, (string) $from, (string) $to);
       $adj->data->{'$type'} = 'arrow';
+      foreach ($data as $key => $value) {
+        if (strpos($key, '$') === 0) {
+          $adj->data->{$key} = $value;
+        }
+      }
     }
   }
   return $graph;
@@ -439,4 +449,23 @@ function thejit_forcedirected_graphapi_settings_form($values, $is_system = FALSE
     '#default_value' => $values['level_distance'],
   );
   return $form;
+}
+
+/**
+ * 
+ * @return type
+ */
+function thejit_forcedirected_graphapi_node_properties() {
+  return array(
+    'background-color' => 'Background Color',
+    '$type' => 'Shape type ($type)',
+    '$dim' => 'Dimension $dim)',
+    '$color' => 'Background Color ($color)',
+  );
+}
+
+function thejit_forcedirected_graphapi_link_properties() {
+  return array(
+    '$color' => 'Color ($color)',
+  );
 }
